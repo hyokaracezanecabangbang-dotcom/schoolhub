@@ -183,6 +183,9 @@ async function performLogin(payload) {
 
     loggedInUser = data.user;
 
+    const pwCard = document.getElementById("student-change-password-card");
+    if (pwCard) pwCard.style.display = (loggedInUser.role === "student") ? "block" : "none";
+
     // ✅ ADMIN goes to admin dashboard ONLY
     if (loggedInUser.role === "admin") {
       const el = document.getElementById("admin-email-display");
@@ -660,6 +663,7 @@ document.getElementById("add-assignment-button")?.addEventListener("click", asyn
 
 // ✅ Delete lesson (instant UI update + saves to DB)
 window.deleteLesson = async function (dbKey) {
+  if (isStudent()) return alert("Students cannot delete lesson columns.");
   if (!currentClass) return;
   if (!confirm("Delete this lesson column?")) return;
 
@@ -704,7 +708,7 @@ function renderGradebook() {
       ${lessons.map(l => `
         <th>
           ${l.name} (${l.category}) / ${l.max}
-          <button onclick="deleteLesson('${l.dbKey}')" style="margin-left:6px;color:red;">🗑</button>
+          ${isStudent() ? "" : `<button onclick="deleteLesson('${l.dbKey}')" style="margin-left:6px;color:red;">🗑</button>`}
         </th>
       `).join("")}
       <th>Final</th>
