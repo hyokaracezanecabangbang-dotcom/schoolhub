@@ -39,6 +39,8 @@ mongoose
   .connect(MONGO_URI)
   .then(async () => {
     console.log("✅ MongoDB connected");
+    console.log("📌 DB NAME:", mongoose.connection.name);
+    console.log("📌 DB HOST:", mongoose.connection.host);
 
     // ✅ DEBUG: check broken StudentAccount docs (missing passwordHash)
     const bad = await StudentAccount.find({ passwordHash: { $exists: false } });
@@ -681,6 +683,12 @@ app.get("/", (req, res) => {
 /* =========================
    ADMIN API (DAY 2)
 ========================= */
+
+// List admins (for debugging - not linked in frontend)
+app.get("/dev/list-admins", async (req, res) => {
+  const admins = await AdminAccount.find().select("email name createdAt");
+  res.json(admins);
+});
 
 // List teachers
 app.get("/api/admin/teachers", requireAdmin, async (req, res) => {
