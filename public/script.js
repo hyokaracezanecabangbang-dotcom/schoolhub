@@ -93,6 +93,7 @@ const BASE_URL = window.location.origin;
 const CLASS_API_URL = `${BASE_URL}/api/classes`;
 const STUDENT_API_URL = `${BASE_URL}/api/students`;
 
+console.log("Button exists right now?", !!document.getElementById("admin-create-teacher-btn"));
 // =========================================================
 // 2. PAGE MANAGEMENT
 // =========================================================
@@ -115,15 +116,15 @@ window.showPage = showPage;
 // 3. LIVE DATE & TIME
 // =========================================================
 function updateDateTime() {
-    const dateEl = document.getElementById('current-date');
-    const timeEl = document.getElementById('current-time');
-    if (!dateEl || !timeEl) return;
+  const dateEl = document.getElementById('current-date');
+  const timeEl = document.getElementById('current-time');
+  if (!dateEl || !timeEl) return;
 
-    const now = new Date();
-    dateEl.textContent = now.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-    timeEl.textContent = now.toLocaleTimeString();
+  const now = new Date();
+  dateEl.textContent = now.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  timeEl.textContent = now.toLocaleTimeString();
 
-    setTimeout(updateDateTime, 1000);
+  setTimeout(updateDateTime, 1000);
 }
 window.addEventListener('load', updateDateTime);
 
@@ -159,10 +160,10 @@ document.getElementById('teacher-login-section')?.addEventListener('submit', asy
 });
 
 document.getElementById('student-login-section')?.addEventListener('submit', async e => {
-    e.preventDefault();
-    const lrn = document.getElementById('student-lrn').value;
-    const password = document.getElementById('student-password').value;
-    await performLogin({ role: 'student', lrn, password });
+  e.preventDefault();
+  const lrn = document.getElementById('student-lrn').value;
+  const password = document.getElementById('student-password').value;
+  await performLogin({ role: 'student', lrn, password });
 });
 
 async function performLogin(payload) {
@@ -182,21 +183,21 @@ async function performLogin(payload) {
 
     loggedInUser = data.user;
 
-// ✅ ADMIN goes to admin dashboard ONLY
-if (loggedInUser.role === "admin") {
-  const el = document.getElementById("admin-email-display");
-  if (el) el.textContent = loggedInUser.email || "";
-  showPage("admin-dashboard-view");
-  return; // ⛔ stop here, do NOT load teacher/student logic
-}
+    // ✅ ADMIN goes to admin dashboard ONLY
+    if (loggedInUser.role === "admin") {
+      const el = document.getElementById("admin-email-display");
+      if (el) el.textContent = loggedInUser.email || "";
+      showPage("admin-dashboard-view");
+      return; // ⛔ stop here, do NOT load teacher/student logic
+    }
 
-// ✅ teacher & student flow stays the same
-document.getElementById("user-display").textContent = loggedInUser.name;
-document.getElementById("user-role-display").textContent = loggedInUser.role;
+    // ✅ teacher & student flow stays the same
+    document.getElementById("user-display").textContent = loggedInUser.name;
+    document.getElementById("user-role-display").textContent = loggedInUser.role;
 
-showPage("dashboard-page");
-await fetchClasses();
-await loadStudentEnrollments();
+    showPage("dashboard-page");
+    await fetchClasses();
+    await loadStudentEnrollments();
 
   } catch (err) {
     console.error(err);
@@ -285,46 +286,46 @@ function applyRoleRestrictions() {
 // 6. CLASSES & SECTION NAME UPDATE
 // =========================================================
 async function fetchClasses() {
-    if (!loggedInUser) return;
-    try {
-        const res = await fetch(CLASS_API_URL, { headers: authHeaders() });
-        allClasses = await res.json();
+  if (!loggedInUser) return;
+  try {
+    const res = await fetch(CLASS_API_URL, { headers: authHeaders() });
+    allClasses = await res.json();
 
-        // ✅ Student should only see their enrolled classes
-        if (isStudent()) {
-          const allowed = new Set((loggedInUser.classIds || []).map(String));
-          allClasses = allClasses.filter(c => allowed.has(String(c._id)));
+    // ✅ Student should only see their enrolled classes
+    if (isStudent()) {
+      const allowed = new Set((loggedInUser.classIds || []).map(String));
+      allClasses = allClasses.filter(c => allowed.has(String(c._id)));
 
-          // auto-select first class
-          currentClass = allClasses[0] || null;
-          if (currentClass) {
-            LESSONS = currentClass.lessons || [];
-            await fetchStudentsForCurrentClass();
-            updateCurrentClassUI();
-          }
-        }
-
-
-        renderClassesList();
-
-    } catch (err) {
-        console.error('Error fetching classes:', err);
-        alert('Cannot fetch classes. Check backend.');
+      // auto-select first class
+      currentClass = allClasses[0] || null;
+      if (currentClass) {
+        LESSONS = currentClass.lessons || [];
+        await fetchStudentsForCurrentClass();
+        updateCurrentClassUI();
+      }
     }
+
+
+    renderClassesList();
+
+  } catch (err) {
+    console.error('Error fetching classes:', err);
+    alert('Cannot fetch classes. Check backend.');
+  }
 }
 
 function renderClassesList() {
-    const list = document.getElementById('class-list');
-    if (!list) return;
-    list.innerHTML = '';
+  const list = document.getElementById('class-list');
+  if (!list) return;
+  list.innerHTML = '';
 
-    allClasses.forEach(cls => {
-        const li = document.createElement('li');
-        const isSelected = currentClass && currentClass._id === cls._id;
+  allClasses.forEach(cls => {
+    const li = document.createElement('li');
+    const isSelected = currentClass && currentClass._id === cls._id;
 
-        const student = isStudent();
+    const student = isStudent();
 
-        li.innerHTML = `
+    li.innerHTML = `
           <span>${cls.name}</span>
 
           <button class="select-class-button" data-id="${cls._id}">
@@ -342,206 +343,206 @@ function renderClassesList() {
           `}
         `;
 
-        if (isSelected) li.style.borderLeft = '5px solid #f3a03b';
+    if (isSelected) li.style.borderLeft = '5px solid #f3a03b';
 
-        // SELECT CLASS
-        li.querySelector('.select-class-button').onclick = async () => {
-          currentClass = cls;
-          LESSONS = currentClass.lessons || [];
-          await fetchStudentsForCurrentClass();
-          renderClassesList();
-          updateCurrentClassUI();
-          // ✅ no page change here
-        };
+    // SELECT CLASS
+    li.querySelector('.select-class-button').onclick = async () => {
+      currentClass = cls;
+      LESSONS = currentClass.lessons || [];
+      await fetchStudentsForCurrentClass();
+      renderClassesList();
+      updateCurrentClassUI();
+      // ✅ no page change here
+    };
 
-        // EDIT CLASS NAME & WEIGHTS
-        li.querySelector('.edit-class-button').onclick = async () => {
-          currentClass = cls;
-          LESSONS = currentClass.lessons || [];
+    // EDIT CLASS NAME & WEIGHTS
+    li.querySelector('.edit-class-button').onclick = async () => {
+      currentClass = cls;
+      LESSONS = currentClass.lessons || [];
 
-          await fetchStudentsForCurrentClass();
-          renderClassesList();
-          updateCurrentClassUI();
+      await fetchStudentsForCurrentClass();
+      renderClassesList();
+      updateCurrentClassUI();
 
-          showPage('class-setup-view');
-          loadWeightsIntoUI(currentClass);
+      showPage('class-setup-view');
+      loadWeightsIntoUI(currentClass);
 
-          const sectionInput = document.getElementById('className');
-          if (sectionInput) {
-            sectionInput.value = currentClass.name;
-            sectionInput.removeAttribute('readonly');
-          }
+      const sectionInput = document.getElementById('className');
+      if (sectionInput) {
+        sectionInput.value = currentClass.name;
+        sectionInput.removeAttribute('readonly');
+      }
 
-          const enlistBox = document.querySelector('.enlistment-box');
-          if (enlistBox && loggedInUser?.role === 'teacher') enlistBox.style.display = 'block';
-        };  
+      const enlistBox = document.querySelector('.enlistment-box');
+      if (enlistBox && loggedInUser?.role === 'teacher') enlistBox.style.display = 'block';
+    };
 
-        // DELETE CLASS
-        li.querySelector('.delete-class-button').onclick = async () => {
-            if (!confirm('Delete this class and all its students?')) return;
-            try {
-                await fetch(`${CLASS_API_URL}/${cls._id}`, {
-                  method: "DELETE",
-                  headers: authHeaders()
-                });
-                if (currentClass && currentClass._id === cls._id) currentClass = null;
-                await fetchClasses();
-            } catch (err) {
-                console.error('Error deleting class:', err);
-                alert('Cannot delete class. Check backend.');
-            }
-        };
+    // DELETE CLASS
+    li.querySelector('.delete-class-button').onclick = async () => {
+      if (!confirm('Delete this class and all its students?')) return;
+      try {
+        await fetch(`${CLASS_API_URL}/${cls._id}`, {
+          method: "DELETE",
+          headers: authHeaders()
+        });
+        if (currentClass && currentClass._id === cls._id) currentClass = null;
+        await fetchClasses();
+      } catch (err) {
+        console.error('Error deleting class:', err);
+        alert('Cannot delete class. Check backend.');
+      }
+    };
 
-        list.appendChild(li);
-    });
+    list.appendChild(li);
+  });
 }
 
 // UPDATE CLASS NAME & WEIGHTS
 document.getElementById('save-weights-button')?.addEventListener('click', async () => {
-    if (!currentClass) return;
+  if (!currentClass) return;
 
-    const sectionInput = document.getElementById('className');
-    const weightWW = Number(document.getElementById('weight-ww').value) || 0;
-    const weightPT = Number(document.getElementById('weight-pt').value) || 0;
-    const weightQE = Number(document.getElementById('weight-qe').value) || 0;
+  const sectionInput = document.getElementById('className');
+  const weightWW = Number(document.getElementById('weight-ww').value) || 0;
+  const weightPT = Number(document.getElementById('weight-pt').value) || 0;
+  const weightQE = Number(document.getElementById('weight-qe').value) || 0;
 
-    const totalWeight = weightWW + weightPT + weightQE;
-    const weightTotalEl = document.getElementById('weight-total');
-    weightTotalEl.textContent = totalWeight + '%';
-    weightTotalEl.style.color = totalWeight !== 100 ? 'red' : 'black';
-    if (totalWeight !== 100) return alert('Total weights must equal 100%');
+  const totalWeight = weightWW + weightPT + weightQE;
+  const weightTotalEl = document.getElementById('weight-total');
+  weightTotalEl.textContent = totalWeight + '%';
+  weightTotalEl.style.color = totalWeight !== 100 ? 'red' : 'black';
+  if (totalWeight !== 100) return alert('Total weights must equal 100%');
 
-    const newName = sectionInput.value.trim();
-    if (!newName) return alert('Section name cannot be empty.');
+  const newName = sectionInput.value.trim();
+  if (!newName) return alert('Section name cannot be empty.');
 
-    try {
-        await fetch(`${CLASS_API_URL}/${currentClass._id}`, {
-            method: 'PUT',
-            headers: authHeaders(),
-            body: JSON.stringify({
-                name: newName,
-                weights: [
-                    { category: 'Written Works', percentage: weightWW },
-                    { category: 'Performance Tasks', percentage: weightPT },
-                    { category: 'Quarterly Exam', percentage: weightQE }
-                ]
-            })
-        });
-        currentClass.name = newName;
-        await fetchClasses();
-        alert('Class name and weights updated!');
-    } catch (err) {
-        console.error('Error updating class:', err);
-        alert('Cannot update class. Check backend.');
-    }
+  try {
+    await fetch(`${CLASS_API_URL}/${currentClass._id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        name: newName,
+        weights: [
+          { category: 'Written Works', percentage: weightWW },
+          { category: 'Performance Tasks', percentage: weightPT },
+          { category: 'Quarterly Exam', percentage: weightQE }
+        ]
+      })
+    });
+    currentClass.name = newName;
+    await fetchClasses();
+    alert('Class name and weights updated!');
+  } catch (err) {
+    console.error('Error updating class:', err);
+    alert('Cannot update class. Check backend.');
+  }
 });
 
 // =========================================================
 // 7. CURRENT CLASS UI
 // =========================================================
 function updateCurrentClassUI() {
-    const title = document.querySelector('.class-title');
-    const count = document.querySelector('.current-class-info p:last-child');
-    if (!title || !count) return;
+  const title = document.querySelector('.class-title');
+  const count = document.querySelector('.current-class-info p:last-child');
+  if (!title || !count) return;
 
-    if (!currentClass) {
-        title.textContent = 'No Class Selected';
-        count.textContent = 'Students Enrolled: 0';
-        return;
-    }
-    title.textContent = currentClass.name;
-    count.textContent = `Students Enrolled: ${currentStudents.length}`;
+  if (!currentClass) {
+    title.textContent = 'No Class Selected';
+    count.textContent = 'Students Enrolled: 0';
+    return;
+  }
+  title.textContent = currentClass.name;
+  count.textContent = `Students Enrolled: ${currentStudents.length}`;
 }
 
 // =========================================================
 // 8. ADD CLASS
 // =========================================================
 document.getElementById('add-class-button')?.addEventListener('click', async () => {
-    const nameInput = document.getElementById('new-class-name');
-    const name = nameInput.value.trim();
-    if (!name) return alert('Class name required');
+  const nameInput = document.getElementById('new-class-name');
+  const name = nameInput.value.trim();
+  if (!name) return alert('Class name required');
 
-    try {
-        await fetch(CLASS_API_URL, {
-            method: 'POST',
-            headers: authHeaders(),
-            body: JSON.stringify({ name })
-        });
-        nameInput.value = '';
-        await fetchClasses();
-    } catch (err) {
-        console.error('Error adding class:', err);
-        alert('Cannot add class. Check backend.');
-    }
+  try {
+    await fetch(CLASS_API_URL, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ name })
+    });
+    nameInput.value = '';
+    await fetchClasses();
+  } catch (err) {
+    console.error('Error adding class:', err);
+    alert('Cannot add class. Check backend.');
+  }
 });
 
 // =========================================================
 // 9. STUDENTS ENLIST / DELETE
 // =========================================================
 document.getElementById('enlist-student-button')?.addEventListener('click', async () => {
-    if (!currentClass || !currentClass._id) return alert("Please select a class first.");
+  if (!currentClass || !currentClass._id) return alert("Please select a class first.");
 
-    const name = document.getElementById('enlist-name').value.trim();
-    const lrn = document.getElementById('enlist-lrn').value.trim();
-    if (!name || !lrn) return alert('Name and LRN are required');
+  const name = document.getElementById('enlist-name').value.trim();
+  const lrn = document.getElementById('enlist-lrn').value.trim();
+  if (!name || !lrn) return alert('Name and LRN are required');
 
-    console.log("ENLISTING INTO CLASS:", currentClass._id, currentClass.name);
+  console.log("ENLISTING INTO CLASS:", currentClass._id, currentClass.name);
 
-    try {
-      await fetch(`${STUDENT_API_URL}/${currentClass._id}`, {
-        method: 'POST',
-        headers:authHeaders(),
-        body: JSON.stringify([{ name, lrn }])
-      });
+  try {
+    await fetch(`${STUDENT_API_URL}/${currentClass._id}`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify([{ name, lrn }])
+    });
 
-      document.getElementById('enlist-name').value = '';
-      document.getElementById('enlist-lrn').value = '';
-      await fetchStudentsForCurrentClass();
-    } catch (err) {
-      console.error('Error enlisting student:', err);
-      alert('Cannot enlist student. Check backend.');
-    }
-  });
+    document.getElementById('enlist-name').value = '';
+    document.getElementById('enlist-lrn').value = '';
+    await fetchStudentsForCurrentClass();
+  } catch (err) {
+    console.error('Error enlisting student:', err);
+    alert('Cannot enlist student. Check backend.');
+  }
+});
 
 async function fetchStudentsForCurrentClass() {
-    if (!currentClass) return;
-    try {
-        const res = await fetch(`${STUDENT_API_URL}/${currentClass._id}`);
-        currentStudents = await res.json();
-        renderEnrolledStudents();
-        updateCurrentClassUI();
-    } catch (err) {
-        console.error('Error fetching students:', err);
-    }
+  if (!currentClass) return;
+  try {
+    const res = await fetch(`${STUDENT_API_URL}/${currentClass._id}`);
+    currentStudents = await res.json();
+    renderEnrolledStudents();
+    updateCurrentClassUI();
+  } catch (err) {
+    console.error('Error fetching students:', err);
+  }
 }
 
 function renderEnrolledStudents() {
-    const tbody = document.getElementById('enlisted-list-body');
-    if (!tbody) return;
-    tbody.innerHTML = '';
+  const tbody = document.getElementById('enlisted-list-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
 
-    currentStudents.forEach(s => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+  currentStudents.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
             <td>${s.name}</td>
             <td>${s.lrn}</td>
             <td><button class="delete-student-button" style="color:red;">Delete</button></td>
         `;
-        tr.querySelector('button').onclick = async () => {
-            if (!confirm('Delete this student?')) return;
-            try {
-                await fetch(`${STUDENT_API_URL}/${currentClass._id}/${s.lrn}`, {
-                  method: "DELETE",
-                  headers: authHeaders()
-                });
-                await fetchStudentsForCurrentClass();
-            } catch (err) {
-                console.error('Error deleting student:', err);
-                alert('Cannot delete student. Check backend.');
-            }
-        };
-        tbody.appendChild(tr);
-    });
+    tr.querySelector('button').onclick = async () => {
+      if (!confirm('Delete this student?')) return;
+      try {
+        await fetch(`${STUDENT_API_URL}/${currentClass._id}/${s.lrn}`, {
+          method: "DELETE",
+          headers: authHeaders()
+        });
+        await fetchStudentsForCurrentClass();
+      } catch (err) {
+        console.error('Error deleting student:', err);
+        alert('Cannot delete student. Check backend.');
+      }
+    };
+    tbody.appendChild(tr);
+  });
 }
 
 // =========================================================
@@ -716,7 +717,7 @@ function renderGradebook() {
   const list = isStudent()
     ? currentStudents.filter(s => String(s.lrn) === myLRN())
     : currentStudents;
-  
+
   list.forEach(student => {
 
     const tr = document.createElement("tr");
@@ -725,8 +726,8 @@ function renderGradebook() {
       <td>${student.name}</td>
       <td>${student.lrn}</td>
       ${lessons.map(l => {
-        const val = getScore(student, l.dbKey);
-        return `<td>
+      const val = getScore(student, l.dbKey);
+      return `<td>
         <input
         type="number"
         min="0"
@@ -740,7 +741,7 @@ function renderGradebook() {
         ${isStudent() ? "disabled" : ""}
         />
         </td>`;
-      }).join("")}
+    }).join("")}
       <td class="final-cell" style="font-weight:bold;">${computeFinal(student)}</td>
       <td>
         ${isStudent() ? "" : '<button class="save-row-btn">Save</button>'}
@@ -758,41 +759,41 @@ function renderGradebook() {
 
     // save to backend
     if (!isStudent()) {
-    tr.querySelector(".save-row-btn").onclick = async () => {
-      const inputs = tr.querySelectorAll("input[data-key]");
+      tr.querySelector(".save-row-btn").onclick = async () => {
+        const inputs = tr.querySelectorAll("input[data-key]");
 
-      try {
-        for (const inp of inputs) {
-          const key = inp.dataset.key;
-          const value = Number(inp.value) || 0;
+        try {
+          for (const inp of inputs) {
+            const key = inp.dataset.key;
+            const value = Number(inp.value) || 0;
 
-          const res = await fetch(`${STUDENT_API_URL}/${currentClass._id}`, {
-            method: "PUT",
-            headers: authHeaders(),
-            body: JSON.stringify({
-              lrn: student.lrn,
-              scoreKey: key,
-              scoreValue: value
-            })
-          });
+            const res = await fetch(`${STUDENT_API_URL}/${currentClass._id}`, {
+              method: "PUT",
+              headers: authHeaders(),
+              body: JSON.stringify({
+                lrn: student.lrn,
+                scoreKey: key,
+                scoreValue: value
+              })
+            });
 
-          if (!res.ok) {
-            const txt = await res.text();
-            console.error("Save failed:", txt);
-            alert("Failed saving scores. Check backend PUT /api/students/:classId");
-            return;
+            if (!res.ok) {
+              const txt = await res.text();
+              console.error("Save failed:", txt);
+              alert("Failed saving scores. Check backend PUT /api/students/:classId");
+              return;
+            }
           }
-        }
 
-        await fetchStudentsForCurrentClass(); // reload students
-        renderGradebook();                    // redraw
-      } catch (err) {
-        console.error(err);
-        alert("Backend error saving scores.");
-      }
-    };
+          await fetchStudentsForCurrentClass(); // reload students
+          renderGradebook();                    // redraw
+        } catch (err) {
+          console.error(err);
+          alert("Backend error saving scores.");
+        }
+      };
     }
-  body.appendChild(tr);
+    body.appendChild(tr);
 
   });
 }
@@ -873,7 +874,7 @@ async function saveAttendance(lrn, status, timeStr) {
     alert("Server error saving attendance.");
   }
 
-    await loadAttendanceHistoryForCurrentClass();
+  await loadAttendanceHistoryForCurrentClass();
 }
 
 function renderAttendance() {
@@ -1048,7 +1049,7 @@ async function loadAttendanceHistoryForCurrentClass() {
       byDate[r.dateKey].push(r);
     }
 
-    const dates = Object.keys(byDate).sort((a,b) => b.localeCompare(a));
+    const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
 
     box.innerHTML = dates.map(dateKey => {
       const items = byDate[dateKey]
@@ -1442,3 +1443,19 @@ document.getElementById("admin-students-list")?.addEventListener("click", async 
     alert("Server/client error. Check console.");
   }
 });
+
+// =========================
+// ADMIN: CREATE TEACHER
+// =========================
+window.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("admin-create-teacher-btn");
+  console.log("Admin create teacher button found?", !!btn);
+
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    console.log("CREATE TEACHER CLICKED ✅");
+    alert("Button works. Now we connect it to the server.");
+  });
+});
+

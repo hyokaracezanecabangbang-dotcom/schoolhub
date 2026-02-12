@@ -867,6 +867,39 @@ app.patch("/api/admin/teachers/:username/enable", requireAdmin, async (req, res)
   res.json({ message: "Teacher enabled", username: updated.username, disabled: updated.disabled });
 });
 
+app.post("/api/admin/teachers", requireAdmin, async (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    const username = String(req.body.username || "").trim();
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const password = String(req.body.password || "");
+
+    if (!name || !username || !password) {
+      return res.status(400).json({ message: "name, username, password required" });
+    }
+
+    const exists = await TeacherAccount.findOne({
+      $or: [{ username }, ...(email ? [{ email }] : [])]
+    });
+    if (exists) return res.status(409).json({ message: "Teacher already exists" });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await TeacherAccount.create({
+      name,
+      username,
+      email: email || undefined,
+      passwordHash,
+      disabled: false
+    });
+
+    res.status(201).json({ message: "Teacher created" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create teacher", error: err.message });
+  }
+});
+
 /* =========================
    START
 ========================= */
