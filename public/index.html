@@ -122,7 +122,7 @@
   <div class="dashboard-container page-container app-page" id="dashboard-page" style="display:none;">
     <h1 class="logo"><span class="logo-school">School</span><span class="logo-hub">Hub</span></h1>
     <h2>Welcome, <span id="user-display">User</span>!</h2>
-    <p style="color:#666;font-weight:bold;">Role: <span id="user-role-display">Guest</span></p>
+    <p style="color:#4e4e4e;font-weight:bold;">Role: <span id="user-role-display">Guest</span></p>
 
     <div class="date-time-display">
       <p>📅 <span id="current-date">Loading...</span></p>
@@ -138,12 +138,12 @@
     <!-- STUDENT: My Classes / Records -->
     <div id="student-records-card" class="card" style="display:none;margin-top:15px;">
       <h3>📘 My Classes & Grades</h3>
-      <p style="color:#666;margin-top:4px;">Tap a class to view your scores.</p>
+      <p style="color:#2e2e2e;margin-top:4px;">Tap a class to view your scores.</p>
       <div id="student-class-list" style="display:flex;flex-direction:column;gap:10px;margin-top:10px;"></div>
     </div>
     <div class="card" id="student-att-history-card" style="margin-top:15px; display:none;">
       <h4>📌 Attendance History (Absent/Tardy)</h4>
-      <p style="color:#666;margin-top:4px;">Only days marked Absent or Tardy are shown.</p>
+      <p style="color:#4a4949;margin-top:4px;">Only days marked Absent or Tardy are shown.</p>
 
       <table style="width:100%; border-collapse:collapse; margin-top:10px;">
         <thead>
@@ -257,11 +257,12 @@
       <tbody id="attendance-body"></tbody>
     </table>
 
-    <div class="card" style="margin-top:15px;">
-      <h4>📌 Attendance Issues (Absent/Tardy)</h4>
-      <p style="color:#666;margin-top:4px;">Shows only days marked Absent or Tardy.</p>
-      <div id="attendance-history-box">Select a class to view history.</div>
-    </div>
+    <div class="card" id="teacher-att-issues-card" style="margin-top:15px;">
+    <h4>📌 Attendance Issues (Absent/Tardy)</h4>
+    <p style="color:#545252;margin-top:4px;">Shows only days marked Absent or Tardy.</p>
+    <div id="attendance-history-box">Select a class to view history.</div>
+  </div>
+
 
     <button class="nav-button" onclick="showPage('dashboard-page')">Back to Dashboard</button>
   </div>
@@ -274,7 +275,7 @@
   </h1>
 
   <h2>Admin Dashboard</h2>
-  <p style="color:#666;font-weight:bold;">
+  <p style="color:#484848;font-weight:bold;">
     Logged in as: <span id="admin-email-display"></span>
   </p>
 

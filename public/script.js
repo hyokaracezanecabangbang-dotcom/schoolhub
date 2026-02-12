@@ -290,6 +290,11 @@ function applyRoleRestrictions() {
   // student-only attendance history card
   const attHistoryCard = document.getElementById("student-att-history-card");
   if (attHistoryCard) attHistoryCard.style.display = isStudent() ? "block" : "none";
+
+  // teacher-only attendance issues card
+  const issuesCard = document.getElementById("teacher-att-issues-card");
+  if (issuesCard) issuesCard.style.display = (loggedInUser?.role === "teacher") ? "none" : "block";
+
 }
 
 // =========================================================
@@ -1127,7 +1132,8 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
   if (recordsCard) recordsCard.style.display = "none";
 
   showPage('login-view');
-  document.getElementById("change-password-view")?.style.display = "none";
+  const cp = document.getElementById("change-password-view");
+  if (cp) cp.style.display = "none";
 });
 // ADMIN LOGOUT
 document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
@@ -1139,7 +1145,8 @@ document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
   if (pwCard) pwCard.style.display = "none";
 
   showPage("login-view");
-  document.getElementById("change-password-view")?.style.display = "none";
+  const cp = document.getElementById("change-password-view");
+  if (cp) cp.style.display = "none";
 });
 
 // =========================================================
