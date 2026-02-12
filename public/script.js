@@ -1132,8 +1132,7 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
   if (recordsCard) recordsCard.style.display = "none";
 
   showPage('login-view');
-  const cp = document.getElementById("change-password-view");
-  if (cp) cp.style.display = "none";
+  document.getElementById("change-password-view")?.style.display = "none";
 });
 // ADMIN LOGOUT
 document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
@@ -1145,8 +1144,7 @@ document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
   if (pwCard) pwCard.style.display = "none";
 
   showPage("login-view");
-  const cp = document.getElementById("change-password-view");
-  if (cp) cp.style.display = "none";
+  document.getElementById("change-password-view")?.style.display = "none";
 });
 
 // =========================================================
