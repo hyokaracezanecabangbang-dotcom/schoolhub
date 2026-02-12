@@ -208,12 +208,13 @@ async function performLogin(payload) {
   }
 }
 
-document.getElementById("change-password-form")?.addEventListener("submit", async (e) => {
+document.getElementById("student-change-password-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!loggedInUser || loggedInUser.role !== "student") return;
 
-  const currentPassword = document.getElementById("cp-current").value;
-  const newPassword = document.getElementById("cp-new").value;
-  const confirmPassword = document.getElementById("cp-confirm").value;
+  const currentPassword = document.getElementById("scp-current").value;
+  const newPassword = document.getElementById("scp-new").value;
+  const confirmPassword = document.getElementById("scp-confirm").value;
 
   if (newPassword !== confirmPassword) return alert("Passwords do not match.");
   if (newPassword.length < 6) return alert("New password must be at least 6 characters.");
@@ -233,14 +234,13 @@ document.getElementById("change-password-form")?.addEventListener("submit", asyn
     const data = await res.json();
     if (!res.ok) return alert(data.message || "Failed to change password.");
 
-    // update local state so it won't redirect again
-    loggedInUser.mustChangePassword = false;
+    alert("Password updated!");
 
-    alert("Password updated! Logging you in...");
-    showPage("dashboard-page");
-
-    await fetchClasses();
-    await loadStudentEnrollments();
+    // clear inputs
+    ["scp-current","scp-new","scp-confirm"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
 
   } catch (err) {
     console.error(err);
@@ -1132,7 +1132,6 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
   if (recordsCard) recordsCard.style.display = "none";
 
   showPage('login-view');
-  document.getElementById("change-password-view")?.style.display = "none";
 });
 // ADMIN LOGOUT
 document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
@@ -1144,7 +1143,6 @@ document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
   if (pwCard) pwCard.style.display = "none";
 
   showPage("login-view");
-  document.getElementById("change-password-view")?.style.display = "none";
 });
 
 // =========================================================

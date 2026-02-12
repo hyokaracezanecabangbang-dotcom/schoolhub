@@ -91,35 +91,6 @@
     </div>
   </div> <!-- ✅ closes login-view -->
 
-
-  <!-- ✅ CHANGE PASSWORD PAGE (MUST be its own page, NOT inside login-view) -->
-  <div id="change-password-view" class="page-container app-page" style="display:none;">
-    <h2>Change Password</h2>
-    <p>You must change your password before continuing.</p>
-
-    <form id="change-password-form" class="login-form">
-      <div class="input-group">
-        <label>Current Password</label>
-        <input type="password" id="cp-current" required />
-      </div>
-
-      <div class="input-group">
-        <label>New Password</label>
-        <input type="password" id="cp-new" required />
-      </div>
-
-      <div class="input-group">
-        <label>Confirm New Password</label>
-        <input type="password" id="cp-confirm" required />
-      </div>
-
-      <button type="submit" class="login-button">Update Password</button>
-    </form>
-
-    <button class="nav-button" onclick="showPage('login-view')">Back</button>
-  </div>
-
-
   <!-- DASHBOARD PAGE -->
   <div class="dashboard-container page-container app-page" id="dashboard-page" style="display:none;">
     <h1 class="logo"><span class="logo-school">School</span><span class="logo-hub">Hub</span></h1>
@@ -144,35 +115,35 @@
       <div id="student-class-list" style="display:flex;flex-direction:column;gap:10px;margin-top:10px;"></div>
     </div>
 
+    <div class="card" id="student-change-password-card" style="display:none;margin-top:15px;">
+      <h3>🔒 Change Password</h3>
+
+      <form id="student-change-password-form">
+        <div class="input-group">
+          <label>Current Password</label>
+          <input id="scp-current" type="password" required />
+        </div>
+
+        <div class="input-group">
+          <label>New Password</label>
+          <input id="scp-new" type="password" required />
+        </div>
+
+        <div class="input-group">
+          <label>Confirm New Password</label>
+          <input id="scp-confirm" type="password" required />
+        </div>
+
+        <button class="login-button" type="submit">Update Password</button>
+      </form>
+    </div>
+
     <nav class="dashboard-nav">
       <button class="nav-button" id="manage-classes-nav-button">📚 My Classes</button>
       <button class="nav-button" id="attendance-nav-button">✅ Attendance</button>
       <button class="nav-button" id="gradebook-nav-button">📒 Gradebook</button>
       <button class="nav-button" id="logout-button">🚪 Log Out</button>
     </nav>
-  </div>
-  
-  <div class="card" id="student-change-password-card" style="display:none;">
-    <h3>Change Password</h3>
-
-    <form id="change-password-form">
-      <div class="input-group">
-        <label>Current Password</label>
-        <input id="cp-current" type="password" required />
-      </div>
-
-      <div class="input-group">
-        <label>New Password</label>
-        <input id="cp-new" type="password" required />
-      </div>
-
-      <div class="input-group">
-        <label>Confirm New Password</label>
-        <input id="cp-confirm" type="password" required />
-      </div>
-
-      <button class="login-button" type="submit">Update Password</button>
-    </form>
   </div>
 
   <!-- CLASS MANAGEMENT PAGE -->

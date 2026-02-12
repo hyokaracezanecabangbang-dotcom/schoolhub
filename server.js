@@ -546,12 +546,19 @@ app.post("/api/students/:classId", requireTeacher, async (req, res) => {
 });
 
 app.delete("/api/students/:classId/:lrn", requireTeacher, async (req, res) => {
-  const result = await Student.findOneAndDelete({
-    classId: req.params.classId,
-    lrn: req.params.lrn,
-  });
+  const { classId, lrn } = req.params;
+
+  const result = await Student.findOneAndDelete({ classId, lrn });
   if (!result) return res.status(404).json({ message: "Student not found" });
-  res.json({ message: "Student deleted" });
+
+  // ✅ ALSO remove attendance records for this student in this class (all dates)
+  const key = `records.${String(lrn).trim()}`;
+  await Attendance.updateMany(
+    { classId },
+    { $unset: { [key]: "" } }
+  );
+
+  res.json({ message: "Student deleted + attendance cleared" });
 });
 
 // Update ONE score field and recompute final grade
@@ -627,7 +634,7 @@ app.get("/api/attendance/issues/:classId", requireTeacher, async (req, res) => {
       const recordsObj = d.records?.toObject?.() || d.records || {};
 
       for (const [lrn, rec] of Object.entries(recordsObj)) {
-        // ✅ skip if student no longer exists in this class
+        // ✅ skip if student is no longer enrolled in this class
         if (!nameMap.has(String(lrn))) continue;
 
         const status = String(rec?.status || "").toUpperCase();
