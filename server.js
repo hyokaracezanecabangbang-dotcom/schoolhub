@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 
+require("dotenv").config();
+
 const bcrypt = require("bcryptjs");
 console.log("bcrypt hash type:", typeof bcrypt.hash);
 
@@ -55,8 +57,8 @@ app.use((req, res, next) => {
 /* =========================
    DATABASE
 ========================= */
-require("dotenv").config();
-const MONGO_URI = process.env.MONGO_URI;
+
+
 
 mongoose
   .connect(MONGO_URI)
@@ -93,6 +95,46 @@ function requireAdmin(req, res, next) {
   if (role !== "admin") return res.status(403).json({ message: "Admin only" });
   next();
 }
+
+// ✅ ADMIN: Create Teacher Account
+app.post("/api/admin/teachers", requireAdmin, async (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    const username = String(req.body.username || "").trim();
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const password = String(req.body.password || "");
+
+    if (!name || !username || !password) {
+      return res.status(400).json({ message: "name, username, password required" });
+    }
+
+    const exists = await TeacherAccount.findOne({
+      $or: [{ username }, ...(email ? [{ email }] : [])],
+    });
+
+    if (exists) {
+      return res.status(409).json({ message: "Teacher already exists" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const doc = await TeacherAccount.create({
+      name,
+      username,
+      email,
+      passwordHash,
+      disabled: false,
+    });
+
+    res.status(201).json({
+      message: "Teacher created",
+      teacher: { name: doc.name, username: doc.username, email: doc.email },
+    });
+  } catch (err) {
+    console.error("Create teacher error:", err);
+    res.status(500).json({ message: "Failed to create teacher", error: err.message });
+  }
+});
 
 app.get("/api/admin/me", requireAdmin, async (req, res) => {
   res.json({ ok: true, role: "admin" });
@@ -647,12 +689,12 @@ app.put("/api/attendance/:classId/:dateKey", requireTeacher, async (req, res) =>
       cleanStatus === "PRESENT"
         ? { $unset: { [updatePath]: "" } }
         : {
-            $set: {
-              classId,
-              dateKey,
-              [updatePath]: { status: cleanStatus, time: String(time || "") },
-            },
-          };
+          $set: {
+            classId,
+            dateKey,
+            [updatePath]: { status: cleanStatus, time: String(time || "") },
+          },
+        };
 
     const doc = await Attendance.findOneAndUpdate(
       { classId, dateKey },
