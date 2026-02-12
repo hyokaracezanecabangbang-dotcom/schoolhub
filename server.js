@@ -627,6 +627,9 @@ app.get("/api/attendance/issues/:classId", requireTeacher, async (req, res) => {
       const recordsObj = d.records?.toObject?.() || d.records || {};
 
       for (const [lrn, rec] of Object.entries(recordsObj)) {
+        // ✅ skip if student no longer exists in this class
+        if (!nameMap.has(String(lrn))) continue;
+
         const status = String(rec?.status || "").toUpperCase();
         if (status !== "ABSENT" && status !== "TARDY") continue;
 

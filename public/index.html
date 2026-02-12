@@ -91,6 +91,33 @@
     </div>
   </div> <!-- ✅ closes login-view -->
 
+  <!-- ✅ CHANGE PASSWORD PAGE (standalone page) -->
+<div id="change-password-view" class="page-container app-page" style="display:none;">
+  <h2>Change Password</h2>
+  <p>You must change your password before continuing.</p>
+
+  <form id="change-password-form" class="login-form">
+    <div class="input-group">
+      <label for="cp-current">Current Password</label>
+      <input type="password" id="cp-current" required />
+    </div>
+
+    <div class="input-group">
+      <label for="cp-new">New Password</label>
+      <input type="password" id="cp-new" required />
+    </div>
+
+    <div class="input-group">
+      <label for="cp-confirm">Confirm New Password</label>
+      <input type="password" id="cp-confirm" required />
+    </div>
+
+    <button type="submit" class="login-button">Update Password</button>
+  </form>
+
+  <button type="button" class="nav-button" onclick="showPage('login-view')">Back</button>
+</div>
+
   <!-- DASHBOARD PAGE -->
   <div class="dashboard-container page-container app-page" id="dashboard-page" style="display:none;">
     <h1 class="logo"><span class="logo-school">School</span><span class="logo-hub">Hub</span></h1>
@@ -114,6 +141,21 @@
       <p style="color:#666;margin-top:4px;">Tap a class to view your scores.</p>
       <div id="student-class-list" style="display:flex;flex-direction:column;gap:10px;margin-top:10px;"></div>
     </div>
+    <div class="card" id="student-att-history-card" style="margin-top:15px; display:none;">
+      <h4>📌 Attendance History (Absent/Tardy)</h4>
+      <p style="color:#666;margin-top:4px;">Only days marked Absent or Tardy are shown.</p>
+
+      <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Date</th>
+            <th style="text-align:left;">Status</th>
+            <th style="text-align:left;">Time</th>
+          </tr>
+        </thead>
+        <tbody id="student-att-history-body"></tbody>
+      </table>
+    </div>
 
     <nav class="dashboard-nav">
       <button class="nav-button" id="manage-classes-nav-button">📚 My Classes</button>
@@ -121,29 +163,6 @@
       <button class="nav-button" id="gradebook-nav-button">📒 Gradebook</button>
       <button class="nav-button" id="logout-button">🚪 Log Out</button>
     </nav>
-  </div>
-  
-  <div class="card" id="student-change-password-card" style="display:none;">
-    <h3>Change Password</h3>
-
-    <form id="change-password-form">
-      <div class="input-group">
-        <label>Current Password</label>
-        <input id="cp-current" type="password" required />
-      </div>
-
-      <div class="input-group">
-        <label>New Password</label>
-        <input id="cp-new" type="password" required />
-      </div>
-
-      <div class="input-group">
-        <label>Confirm New Password</label>
-        <input id="cp-confirm" type="password" required />
-      </div>
-
-      <button class="login-button" type="submit">Update Password</button>
-    </form>
   </div>
 
   <!-- CLASS MANAGEMENT PAGE -->
@@ -213,22 +232,6 @@
       </table>
     </div>
 
-  <div class="card" id="student-att-history-card" style="margin-top:15px; display:none;">
-  <h4>📌 Attendance History (Absent/Tardy)</h4>
-  <p style="color:#666;margin-top:4px;">Only days marked Absent or Tardy are shown.</p>
-
-  <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-    <thead>
-      <tr>
-        <th style="text-align:left;">Date</th>
-        <th style="text-align:left;">Status</th>
-        <th style="text-align:left;">Time</th>
-      </tr>
-    </thead>
-    <tbody id="student-att-history-body"></tbody>
-  </table>
-</div>
-  
     <button class="nav-button" onclick="showPage('dashboard-page')">Back to Dashboard</button>
   </div>
 

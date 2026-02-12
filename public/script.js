@@ -286,6 +286,10 @@ function applyRoleRestrictions() {
   // student-only change password card
   const pwCard = document.getElementById("student-change-password-card");
   if (pwCard) pwCard.style.display = isStudent() ? "block" : "none";
+
+  // student-only attendance history card
+  const attHistoryCard = document.getElementById("student-att-history-card");
+  if (attHistoryCard) attHistoryCard.style.display = isStudent() ? "block" : "none";
 }
 
 // =========================================================
@@ -1123,6 +1127,7 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
   if (recordsCard) recordsCard.style.display = "none";
 
   showPage('login-view');
+  document.getElementById("change-password-view")?.style.display = "none";
 });
 // ADMIN LOGOUT
 document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
@@ -1134,6 +1139,7 @@ document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
   if (pwCard) pwCard.style.display = "none";
 
   showPage("login-view");
+  document.getElementById("change-password-view")?.style.display = "none";
 });
 
 // =========================================================
