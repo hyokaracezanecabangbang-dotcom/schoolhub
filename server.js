@@ -25,6 +25,29 @@ app.use(express.json());
 // Serve the real app
 app.use(express.static(path.join(__dirname, "public")));
 
+app.post("/dev/create-admin", async (req, res) => {
+  try {
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const name = String(req.body.name || "").trim();
+    const password = String(req.body.password || "");
+
+    if (!email || !name || !password) {
+      return res.status(400).json({ message: "email, name, password required" });
+    }
+
+    const exists = await AdminAccount.findOne({ email });
+    if (exists) return res.status(200).json({ message: "Admin already exists", email });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const doc = await AdminAccount.create({ email, name, passwordHash });
+
+    res.status(201).json({ message: "Admin created", email: doc.email, name: doc.name });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create admin", error: err.message });
+  }
+});
+
 app.use((req, res, next) => {
   console.log("➡️", req.method, req.url);
   next();
