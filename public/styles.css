@@ -1,0 +1,568 @@
+/* --- Global Variables and Base Reset (C, D, Updated for Blue/Orange Theme) --- */
+:root {
+    /* Primary Brand Colors (Inspired by the Image) */
+    --pastel-blue-light: #C0D9E1; /* Very light blue background */
+    --pastel-blue-dark: #7CA1B3; /* Darker blue for highlights/headers */
+    --pastel-orange: #FFB347; /* Primary accent/action color */
+    
+    /* Status Colors */
+    --status-present: #77DD77; /* Soft Green for Present/Success (Kept from K) */
+    --status-tardy: #FFB347; /* Soft Orange for Tardy (Kept from K) */
+    --status-absent: #FF6961; /* Soft Red for Absent/Error (Kept from K) */
+    
+    /* General UI */
+    --background-light: #F4F7F9;
+    --background-white: #FFFFFF;
+    --text-dark: #333333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* --- Logo Styling (E - Updated) --- */
+.logo {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+.logo-school {
+    color: var(--pastel-blue-dark); /* Darker blue */
+}
+
+.logo-hub {
+    color: var(--pastel-orange); /* Orange accent */
+}
+
+/* --- Shared Container Styles (F) --- */
+.login-container, 
+.dashboard-container, 
+.class-setup-container,
+.gradebook-container,
+.attendance-container,
+.class-management-container {
+    width: 90%;
+    max-width: 800px;
+    background-color: var(--background-white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+    margin: 20px auto;
+}
+.page-container, .app-page {
+    display: none; 
+    width: 100%;
+    min-height: 100vh;
+    margin: 0 auto;
+    /* Remove the 'display: flex' from #login-view if it's stacking weirdly */
+}
+/* This ensures that when JS adds 'display: block', it overrides the hidden state */
+.app-page[style*="display: block"] {
+    display: block !important;
+}
+/* Hide all views by default except login */
+.dashboard-container, 
+.class-setup-container, 
+.gradebook-container,
+.attendance-container,
+.class-management-container {
+    display: none;
+}
+
+/* Login specific centering */
+#login-view {
+    max-width: 400px;
+    margin-top: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* --- Form Elements and Buttons (F - Updated) --- */
+#login-form input,
+.setup-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+.login-button {
+    background-color: var(--pastel-orange); /* Primary action color */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.login-button:hover {
+    background-color: #e09e3e; /* Darker orange on hover */
+}
+
+.nav-button {
+    background-color: var(--pastel-blue-dark); /* Secondary action color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.nav-button.secondary {
+    background-color: #ccc;
+    color: var(--text-dark);
+    margin-left: 10px;
+}
+
+.nav-button:hover {
+    background-color: #6a91a3; /* Darker blue on hover */
+}
+
+.nav-button.secondary:hover {
+    background-color: #bbb;
+}
+
+/* --- Dashboard Styling (B) --- */
+.dashboard-container {
+    text-align: center;
+}
+
+.current-class-info {
+    background-color: var(--background-light);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid var(--pastel-blue-dark); /* Use dark blue accent */
+    margin: 20px 0;
+}
+
+.class-title {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 5px 0 10px;
+}
+
+.dashboard-nav {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    margin-top: 20px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.dashboard-action {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* --- Class Setup (G) --- */
+.setup-form {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.weights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.weight-item label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.weight-item input {
+    margin: 0;
+    padding: 8px;
+}
+
+.weight-total-display {
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin: 20px 0;
+}
+
+#weight-total {
+    color: var(--status-present); /* Green for 100% */
+}
+
+.setup-actions {
+    text-align: right;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* --- Gradebook (H - Updated) --- */
+.gradebook-container {
+    max-width: 1200px;
+}
+
+.gradebook-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.gradebook-table-wrapper {
+    overflow-x: auto;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#gradebook-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+#gradebook-table th, 
+#gradebook-table td {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#gradebook-table thead th {
+    background-color: var(--pastel-blue-dark); /* Dark Blue Header */
+    color: white;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.category-header {
+    font-weight: 700;
+    background-color: var(--pastel-blue-light) !important; /* Light Blue Category Bar */
+    color: var(--text-dark) !important;
+}
+
+/* Use different hues of the main theme colors for the sub-headers */
+.assignments-cat { background-color: #e0f7fa !important; }
+.participation-cat { background-color: #ffead1 !important; } /* Light Orange */
+.exams-cat { background-color: #e3f2fd !important; } /* Lightest Blue */
+
+.final-grade-header {
+    background-color: var(--status-present) !important; /* Keep Green for Final Grade */
+}
+
+#gradebook-table td:nth-child(2) { 
+    text-align: left; 
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 5;
+}
+
+#gradebook-table input.score-input {
+    width: 60px;
+    padding: 3px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* --- Attendance View Styling (I) --- */
+.attendance-container {
+    max-width: 1000px;
+}
+
+.attendance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.attendance-header input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Stats Boxes */
+.stat-boxes {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    background-color: #f7f7f7;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    flex-basis: 30%;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2em;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Attendance Log Table */
+#attendance-log-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#attendance-log-table th, 
+#attendance-log-table td {
+    padding: 10px;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+#attendance-log-table thead th {
+    background-color: var(--pastel-blue-dark); /* Dark Blue Header */
+    color: white;
+}
+
+.override-btn {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: var(--text-dark);
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.override-btn:hover {
+    background-color: #eee;
+}
+
+/* --- Class Management View Styling (J - Updated) --- */
+.class-management-container {
+    max-width: 900px;
+}
+
+.manage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.setup-box {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+#class-list {
+    list-style: none;
+    padding: 0;
+}
+
+#class-list li {
+    background-color: #f7f7f7;
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* IMPORTANT FIX: Set the border-left to Blue for selection */
+    border-left: 5px solid var(--pastel-blue-dark);
+}
+
+/* NEW CODE: Add gap between select and delete buttons */
+#class-list li > div {
+    display: flex;
+    gap: 8px; 
+}
+
+/* OLD #class-list button block is DELETED and replaced by specific styles below */
+
+/* Style for the SELECT button in the list */
+#class-list .select-class-button {
+    background-color: var(--pastel-blue-dark); /* Use Dark Blue for select */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* Style for the DELETE button in the list (RED) */
+#class-list .delete-class-button {
+    background-color: var(--status-absent); /* Red delete button */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#class-list .select-class-button:hover {
+    background-color: #6a91a3; /* Darker blue on hover */
+}
+
+#class-list .delete-class-button:hover {
+    background-color: #cb1610; /* Darker red on hover */
+}
+
+/* If a class is selected, its button turns green (overrides the blue/red) */
+#class-list li button.select-class-button[style*="background-color: var(--status-present)"] {
+     background-color: var(--status-present) !important;
+}
+
+
+/* NEW CODE: Change the 'Add Class' button from Orange to Blue */
+.add-class-box .login-button {
+    background-color: var(--pastel-blue-dark); /* Dark Blue */
+    transition: background-color 0.2s;
+}
+
+.add-class-box .login-button:hover {
+    background-color: #6a91a3; /* Darker Blue */
+}
+
+/* --- Modal Styling (L) --- */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 20; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: var(--background-white);
+    margin: 10% auto; 
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--status-absent); /* Red X for close */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.modal-form input,
+.modal-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+}
+/* This makes the role buttons feel like a professional toggle */
+.nav-button {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.nav-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.nav-button:active {
+    transform: translateY(0);
+}
+
+/* Add a "selected" look */
+.active-role {
+    outline: 3px solid white;
+    outline-offset: -4px;
+    font-weight: bold;
+}
+
+/* ===== Login form cleanup ===== */
+.login-forms {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #333;
+}
+
+.input-group input {
+  width: 100%;
+  box-sizing: border-box;
+}

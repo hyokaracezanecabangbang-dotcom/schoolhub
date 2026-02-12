@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Hub - Teacher SIS</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div class="login-container page-container app-page" id="login-view">
+    <h1 class="logo">
+      <span class="logo-school">School</span><span class="logo-hub">Hub</span>
+    </h1>
+
+    <div id="role-selection" style="text-align:center;margin-bottom:20px;">
+      <p style="margin-bottom:10px;font-weight:600;">Please select your role:</p>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button type="button" id="admin-select-btn" class="nav-button" style="background-color:#0d6efd;color:white;">
+          Admin
+        </button>
+        <button type="button" id="teacher-select-btn" class="nav-button" style="background-color:#f3a03b;color:white;">
+          Teacher/Staff
+        </button>
+        <button type="button" id="student-select-btn" class="nav-button" style="background-color:#28a745;color:white;">
+          Student
+        </button>
+      </div>
+    </div>
+
+    <div id="login-forms-wrapper" class="login-forms">
+
+    <!-- ADMIN -->
+      <form id="admin-login-section" class="login-form" style="display:none;">
+      <h2>Admin Login</h2>
+
+      <div class="input-group">
+        <label for="admin-email">Email</label>
+        <input type="text" id="admin-email" placeholder="Enter admin email" required>
+      </div>
+
+      <div class="input-group">
+        <label for="admin-password">Password</label>
+        <input type="password" id="admin-password" placeholder="Enter admin password" required>
+      </div>
+
+      <button type="submit" class="login-button" style="background-color:#0d6efd;">
+        Log In as Admin
+      </button>
+    </form>
+
+      <!-- TEACHER -->
+      <form id="teacher-login-section" class="login-form" style="display:none;">
+        <h2>Teacher Login</h2>
+
+        <div class="input-group">
+          <label for="teacher-username">Username/Email</label>
+          <input type="text" id="teacher-username" placeholder="Enter username or email" required />
+        </div>
+
+        <div class="input-group">
+          <label for="teacher-password">Password</label>
+          <input type="password" id="teacher-password" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="login-button">Log In as Teacher/Staff</button>
+      </form>
+
+      <!-- STUDENT -->
+      <form id="student-login-section" class="login-form" style="display:none;">
+        <h2>Student Login</h2>
+
+        <div class="input-group">
+          <label for="student-lrn">Student LRN (ID)</label>
+          <input type="text" id="student-lrn" placeholder="Enter 12-Digit LRN" required />
+        </div>
+
+        <div class="input-group">
+          <label for="student-password">Password</label>
+          <input type="password" id="student-password" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="login-button" style="background-color:#28a745;">
+          Log In as Student
+        </button>
+      </form>
+
+    </div>
+  </div> <!-- ✅ closes login-view -->
+
+
+  <!-- ✅ CHANGE PASSWORD PAGE (MUST be its own page, NOT inside login-view) -->
+  <div id="change-password-view" class="page-container app-page" style="display:none;">
+    <h2>Change Password</h2>
+    <p>You must change your password before continuing.</p>
+
+    <form id="change-password-form" class="login-form">
+      <div class="input-group">
+        <label>Current Password</label>
+        <input type="password" id="cp-current" required />
+      </div>
+
+      <div class="input-group">
+        <label>New Password</label>
+        <input type="password" id="cp-new" required />
+      </div>
+
+      <div class="input-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="cp-confirm" required />
+      </div>
+
+      <button type="submit" class="login-button">Update Password</button>
+    </form>
+
+    <button class="nav-button" onclick="showPage('login-view')">Back</button>
+  </div>
+
+
+  <!-- DASHBOARD PAGE -->
+  <div class="dashboard-container page-container app-page" id="dashboard-page" style="display:none;">
+    <h1 class="logo"><span class="logo-school">School</span><span class="logo-hub">Hub</span></h1>
+    <h2>Welcome, <span id="user-display">User</span>!</h2>
+    <p style="color:#666;font-weight:bold;">Role: <span id="user-role-display">Guest</span></p>
+
+    <div class="date-time-display">
+      <p>📅 <span id="current-date">Loading...</span></p>
+      <p>⏰ <span id="current-time">Loading...</span></p>
+    </div>
+
+    <div class="current-class-info card">
+      <h3>Current Class Info</h3>
+      <p class="class-title">No Class Selected</p>
+      <p>Students Enrolled: 0</p>
+    </div>
+
+    <!-- STUDENT: My Classes / Records -->
+    <div id="student-records-card" class="card" style="display:none;margin-top:15px;">
+      <h3>📘 My Classes & Grades</h3>
+      <p style="color:#666;margin-top:4px;">Tap a class to view your scores.</p>
+      <div id="student-class-list" style="display:flex;flex-direction:column;gap:10px;margin-top:10px;"></div>
+    </div>
+
+    <nav class="dashboard-nav">
+      <button class="nav-button" id="manage-classes-nav-button">📚 My Classes</button>
+      <button class="nav-button" id="attendance-nav-button">✅ Attendance</button>
+      <button class="nav-button" id="gradebook-nav-button">📒 Gradebook</button>
+      <button class="nav-button" id="logout-button">🚪 Log Out</button>
+    </nav>
+  </div>
+
+  <!-- CLASS MANAGEMENT PAGE -->
+  <div class="class-management-container page-container app-page" id="class-management-view" style="display:none;">
+    <h3>Manage Sections</h3>
+
+    <div class="add-class-box setup-box card" style="display:none;">
+      <h4>➕ Create New Class</h4>
+      <input type="text" id="new-class-name" placeholder="e.g. Grade 10 - Rizal" />
+      <button class="login-button" id="add-class-button">Add Class</button>
+    </div>
+
+    <div class="list-classes-box setup-box card">
+      <h4>My Classes</h4>
+      <ul id="class-list"></ul>
+      <p id="no-classes-message">No classes found.</p>
+    </div>
+
+    <button class="nav-button" onclick="showPage('dashboard-page')">Back to Dashboard</button>
+  </div>
+
+  <!-- CLASS SETUP & ENLIST STUDENT PAGE -->
+  <div class="class-setup-container page-container app-page" id="class-setup-view" style="display:none;">
+    <h3>Class Setup & Enlistment</h3>
+
+    <div class="setup-form card">
+      <label>Section Name:</label>
+      <input type="text" id="className" readonly />
+
+      <div class="weights-grid">
+        <div class="weight-item"><label>Written Works (%):</label><input type="number" class="weight-input" id="weight-ww"></div>
+        <div class="weight-item"><label>Performance Tasks (%):</label><input type="number" class="weight-input" id="weight-pt"></div>
+        <div class="weight-item"><label>Quarterly Exam (%):</label><input type="number" class="weight-input" id="weight-qe"></div>
+      </div>
+
+      <p>Total: <span id="weight-total">100%</span></p>
+      <button class="login-button" id="save-weights-button">Save Weights</button>
+    </div>
+
+    <div class="enlistment-box card" style="margin-top:20px;display:none;">
+      <h4>👤 Enlist New Student</h4>
+      <input type="text" id="enlist-name" placeholder="Full Name" />
+      <input type="text" id="enlist-lrn" placeholder="LRN" />
+      <button class="login-button" id="enlist-student-button">➕ Enlist</button>
+
+      <h4 style="margin-top:20px;">Enrolled Students</h4>
+      <table style="width:100%;">
+        <thead>
+          <tr><th>Name</th><th>LRN</th><th>Action</th></tr>
+        </thead>
+        <tbody id="enlisted-list-body"></tbody>
+      </table>
+    </div>
+
+    <button class="nav-button" onclick="showPage('class-management-view')">Back to Classes</button>
+  </div>
+
+  <!-- GRADEBOOK PAGE -->
+  <div class="gradebook-container page-container app-page" id="gradebook-view" style="display:none;">
+    <h3>Academic Gradebook</h3>
+    <button class="login-button" id="add-assignment-button">➕ Add Lesson</button>
+
+    <div class="gradebook-table-wrapper">
+      <table id="gradebook-table" style="width:100%;border-collapse:collapse;">
+        <thead id="gradebook-head"></thead>
+        <tbody id="gradebook-body"></tbody>
+      </table>
+    </div>
+
+  <div class="card" id="student-att-history-card" style="margin-top:15px; display:none;">
+  <h4>📌 Attendance History (Absent/Tardy)</h4>
+  <p style="color:#666;margin-top:4px;">Only days marked Absent or Tardy are shown.</p>
+
+  <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Date</th>
+        <th style="text-align:left;">Status</th>
+        <th style="text-align:left;">Time</th>
+      </tr>
+    </thead>
+    <tbody id="student-att-history-body"></tbody>
+  </table>
+</div>
+  
+    <button class="nav-button" onclick="showPage('dashboard-page')">Back to Dashboard</button>
+  </div>
+
+  <!-- ATTENDANCE PAGE -->
+  <div class="attendance-container page-container app-page" id="attendance-view" style="display:none;">
+    <h3>Class Attendance</h3>
+
+    <div style="margin-bottom:10px;">
+      <label for="attendance-date"><b>Date:</b></label>
+      <input type="date" id="attendance-date" />
+    </div>
+
+    <div class="stat-boxes" style="display:flex;gap:10px;margin-bottom:15px;">
+      <div class="stat-box card">Present: <span class="stat-number">0%</span></div>
+      <div class="stat-box card">Tardy: <span class="stat-number">0</span></div>
+      <div class="stat-box card">Absent: <span class="stat-number">0</span></div>
+    </div>
+
+    <table id="attendance-log-table">
+      <thead>
+        <tr><th>LRN</th><th>Student</th><th>Time</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody id="attendance-body"></tbody>
+    </table>
+
+    <div class="card" style="margin-top:15px;">
+      <h4>📌 Attendance Issues (Absent/Tardy)</h4>
+      <p style="color:#666;margin-top:4px;">Shows only days marked Absent or Tardy.</p>
+      <div id="attendance-history-box">Select a class to view history.</div>
+    </div>
+
+    <button class="nav-button" onclick="showPage('dashboard-page')">Back to Dashboard</button>
+  </div>
+
+  
+<!-- ================= ADMIN DASHBOARD PAGE ================= -->
+<div class="dashboard-container page-container app-page" id="admin-dashboard-view" style="display:none;">
+  <h1 class="logo">
+    <span class="logo-school">School</span><span class="logo-hub">Hub</span>
+  </h1>
+
+  <h2>Admin Dashboard</h2>
+  <p style="color:#666;font-weight:bold;">
+    Logged in as: <span id="admin-email-display"></span>
+  </p>
+
+  <nav class="dashboard-nav">
+    <button class="nav-button" id="admin-teachers-btn">👩‍🏫 Manage Teachers</button>
+    <button class="nav-button" id="admin-students-btn">👨‍🎓 Manage Students</button>
+    <button class="nav-button" id="admin-logout-btn">🚪 Log Out</button>
+  </nav>
+
+  <div class="card" style="margin-top:15px;">
+    <p>✅ Admin is isolated from teacher/student dashboards.</p>
+  </div>
+</div>
+
+  <!-- ADMIN: TEACHERS PAGE -->
+  <div class="page-container app-page" id="admin-teachers-view" style="display:none;">
+  <h2>Manage Teachers</h2>
+
+  <!-- ✅ Create Teacher Form -->
+  <div class="card">
+    <h3 style="margin-top:0;">➕ Create Teacher Account</h3>
+
+    <div class="input-group">
+      <label>Name</label>
+      <input id="new-teacher-name" placeholder="e.g. Ma'am Santos" />
+    </div>
+
+    <div class="input-group">
+      <label>Username</label>
+      <input id="new-teacher-username" placeholder="e.g. santos.m" />
+    </div>
+
+    <div class="input-group">
+      <label>Email (optional)</label>
+      <input id="new-teacher-email" placeholder="e.g. santos@school.edu" />
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <input id="new-teacher-password" type="password" placeholder="Set a password" />
+    </div>
+
+    <button class="login-button" id="admin-create-teacher-btn" style="background:#0d6efd;">
+      Create Teacher
+    </button>
+
+    <p style="font-size:12px;opacity:.8;margin-top:10px;">
+      Tip: Teachers can log in using username OR email (you already support that in /login).
+    </p>
+  </div>
+
+  <!-- Existing list -->
+  <div class="card" style="margin-top:15px;">
+    <button class="nav-button" id="admin-refresh-teachers">🔄 Refresh</button>
+    <input id="admin-teacher-search" placeholder="Search teacher by name/username..."
+      style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px solid #ddd;">
+    <div id="admin-teachers-list" style="margin-top:12px;">Loading...</div>
+  </div>
+
+  <button class="nav-button" onclick="showPage('admin-dashboard-view')">Back</button>
+</div>
+
+
+  <!-- ADMIN: STUDENTS PAGE -->
+  <div class="page-container app-page" id="admin-students-view" style="display:none;">
+    <h2>Manage Students</h2>
+    <div class="card">
+      <button class="nav-button" id="admin-refresh-students">🔄 Refresh</button>
+      <input id="admin-student-search" class="input" placeholder="Search student by name/LRN..." style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px solid #ddd;">
+      <div id="admin-students-list" style="margin-top:12px;">Loading...</div>
+    </div>
+    <button class="nav-button" onclick="showPage('admin-dashboard-view')">Back</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
