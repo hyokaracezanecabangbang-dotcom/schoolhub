@@ -283,6 +283,9 @@ function applyRoleRestrictions() {
   if (attBtn) attBtn.style.display = isStudent() ? "none" : "inline-block";
   if (gbBtn) gbBtn.style.display = isStudent() ? "none" : "inline-block";
 
+  // student-only change password card
+  const pwCard = document.getElementById("student-change-password-card");
+  if (pwCard) pwCard.style.display = isStudent() ? "block" : "none";
 }
 
 // =========================================================
@@ -1109,6 +1112,9 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
   currentClass = null;
   currentStudents = [];
 
+  const pwCard = document.getElementById("student-change-password-card");
+  if (pwCard) pwCard.style.display = "none";
+
   // clear student lists safely
   const classList = document.getElementById("student-class-list");
   if (classList) classList.innerHTML = "";
@@ -1123,6 +1129,10 @@ document.getElementById("admin-logout-btn")?.addEventListener("click", () => {
   loggedInUser = null;
   currentClass = null;
   currentStudents = [];
+
+  const pwCard = document.getElementById("student-change-password-card");
+  if (pwCard) pwCard.style.display = "none";
+
   showPage("login-view");
 });
 
