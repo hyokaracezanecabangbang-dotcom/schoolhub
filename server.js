@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 
-require("dotenv").config();
-
 const bcrypt = require("bcryptjs");
 console.log("bcrypt hash type:", typeof bcrypt.hash);
 
@@ -57,21 +55,19 @@ app.use((req, res, next) => {
 /* =========================
    DATABASE
 ========================= */
+require("dotenv").config();
 
+const MONGO_URI = process.env.MONGO_URI;
 
+if (!MONGO_URI) {
+  console.error("❌ MONGO_URI is missing. Check your .env (local) or Railway Variables (deploy).");
+  process.exit(1);
+}
 
 mongoose
   .connect(MONGO_URI)
-  .then(async () => {
-    console.log("✅ MongoDB connected");
-    console.log("📌 DB NAME:", mongoose.connection.name);
-    console.log("📌 DB HOST:", mongoose.connection.host);
-
-    // ✅ DEBUG: check broken StudentAccount docs (missing passwordHash)
-    const bad = await StudentAccount.find({ passwordHash: { $exists: false } });
-    console.log("BAD ACCOUNTS:", bad.length);
-  })
-  .catch((err) => console.error("❌ Mongo error:", err.message));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ Mongo error:", err.message));
 
 /* =========================
    HELPERS
