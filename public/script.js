@@ -1467,18 +1467,47 @@ document.getElementById("admin-students-list")?.addEventListener("click", async 
   }
 });
 
-// =========================
-// ADMIN: CREATE TEACHER
-// =========================
-window.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("admin-create-teacher-btn");
-  console.log("Admin create teacher button found?", !!btn);
+document.getElementById("admin-create-teacher-btn")?.addEventListener("click", async () => {
+  if (!loggedInUser || loggedInUser.role !== "admin") {
+    return alert("Admin only.");
+  }
 
-  if (!btn) return;
+  const name = document.getElementById("new-teacher-name")?.value.trim();
+  const username = document.getElementById("new-teacher-username")?.value.trim();
+  const email = document.getElementById("new-teacher-email")?.value.trim();
+  const password = document.getElementById("new-teacher-password")?.value;
 
-  btn.addEventListener("click", async () => {
-    console.log("CREATE TEACHER CLICKED ✅");
-    alert("Button works. Now we connect it to the server.");
-  });
+  if (!name || !username || !password) {
+    return alert("Name, Username, and Password are required.");
+  }
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/teachers`, {
+      method: "POST",
+      headers: authHeaders(), // includes x-role: admin
+      body: JSON.stringify({ name, username, email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return alert(data.message || "Failed to create teacher.");
+    }
+
+    alert("✅ Teacher created!");
+
+    // clear fields
+    document.getElementById("new-teacher-name").value = "";
+    document.getElementById("new-teacher-username").value = "";
+    document.getElementById("new-teacher-email").value = "";
+    document.getElementById("new-teacher-password").value = "";
+
+    // refresh list
+    await loadAdminTeachers();
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error creating teacher.");
+  }
 });
 

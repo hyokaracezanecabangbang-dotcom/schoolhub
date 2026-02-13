@@ -105,29 +105,26 @@ app.post("/api/admin/teachers", requireAdmin, async (req, res) => {
     }
 
     const exists = await TeacherAccount.findOne({
-      $or: [{ username }, ...(email ? [{ email }] : [])],
+      $or: [{ username }, ...(email ? [{ email }] : [])]
     });
-
-    if (exists) {
-      return res.status(409).json({ message: "Teacher already exists" });
-    }
+    if (exists) return res.status(409).json({ message: "Teacher already exists" });
 
     const passwordHash = await bcrypt.hash(password, 10);
 
     const doc = await TeacherAccount.create({
       name,
       username,
-      email,
+      email: email || undefined,
       passwordHash,
-      disabled: false,
+      disabled: false
     });
 
     res.status(201).json({
       message: "Teacher created",
-      teacher: { name: doc.name, username: doc.username, email: doc.email },
+      teacher: { name: doc.name, username: doc.username, email: doc.email || "" }
     });
   } catch (err) {
-    console.error("Create teacher error:", err);
+    console.error(err);
     res.status(500).json({ message: "Failed to create teacher", error: err.message });
   }
 });
